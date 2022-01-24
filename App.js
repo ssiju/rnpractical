@@ -1,112 +1,62 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React, {Component} from 'react';
+import {View, Text, FlatList, Image} from 'react-native';
+import {DataApi} from './src/config/axios';
+import SearchBar from './src/screen/component/SearchBar';
+import styles from './src/screen/styles/styles';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      users: [],
+      error: null,
+      searchValue: '',
+    };
+  }
+  componentDidMount() {
+    this.getUser();
+  }
+  searchFunction = text => {
+    // Alert.alert(JSON.stringify(this.state.users));
+    const updatedData = this.state.users.filter(item => {
+      const item_data = `${item.login.toUpperCase()})`;
+      const text_data = text.toUpperCase();
+      return item_data.indexOf(text_data) > -1;
+    });
+    this.setState({data: updatedData, searchValue: text});
   };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+  getUser() {
+    DataApi.getUsers()
+      .then(res => {
+        // Alert.alert('Abc', JSON.stringify(res.data));
+        this.setState({users: res.data});
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+  render() {
+    return (
+      <View style={styles.container}>
+        <SearchBar
+          searchValue={this.state.searchValue}
+          searchFunction={this.searchFunction}></SearchBar>
+        <FlatList
+          data={this.state.users}
+          renderItem={({item}) => (
+            <View style={styles.item}>
+              <Image style={styles.uAvatar} source={{uri: item.avatar_url}} />
+              <View style={{alignItems: 'flex-start'}}>
+                <Text style={styles.unameText}>{item.login}</Text>
+                <Text style={styles.unameText}>{item.url}</Text>
+                <Text style={styles.unameText}>{item.html_url}</Text>
+              </View>
+            </View>
+          )}
+        />
+      </View>
+    );
+  }
+}
 
 export default App;
