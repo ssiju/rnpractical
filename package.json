@@ -15,7 +15,10 @@
     "axios": "^0.25.0",
     "react": "17.0.2",
     "react-native": "0.67.1",
-    "react-native-safe-area-view": "^1.1.1"
+    "react-native-gesture-handler": "^2.2.0",
+    "react-native-reanimated": "^2.3.1",
+    "react-native-safe-area-view": "^1.1.1",
+    "react-native-screens": "^1.0.0-alpha.23"
   },
   "devDependencies": {
     "@babel/core": "^7.16.12",
@@ -24,6 +27,7 @@
     "babel-jest": "^27.4.6",
     "eslint": "^8.7.0",
     "jest": "^27.4.7",
+    "jetifier": "^2.0.0",
     "metro-react-native-babel-preset": "^0.66.2",
     "react-test-renderer": "17.0.2"
   },

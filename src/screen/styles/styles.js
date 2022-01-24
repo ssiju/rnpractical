@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderWidth: 1,
     borderColor: 'black',
+    borderRadius: 10,
   },
   uAvatar: {
     width: 50,
